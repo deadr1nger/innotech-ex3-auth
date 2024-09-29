@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
         }
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findById(UUID userId) {
-        if(userId.equals("") || userId.equals(null)){
+        if (userId.equals("") || userId.equals(null)) {
             throw new NullPointerException("User Id can't be EMPTY or NULL");
         }
         return userRepository.findById(userId).orElseThrow(() -> new NullPointerException(String.format("User with Id %s is not found", userId)));

@@ -21,7 +21,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TokenServiceImpl implements TokenService{
+public class TokenServiceImpl implements TokenService {
 
     private static final String ROLE_CLAIM = "role";
 
@@ -35,13 +35,13 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public String generateToken(String username, UUID id, List<String> roles) {
-        if(username.equals("") || username.equals(null)){
+        if (username.equals("") || username.equals(null)) {
             throw new NullPointerException("Username can't be EMPTY or NULL");
         }
-        if(id.equals("") || id.equals(null)){
+        if (id.equals("") || id.equals(null)) {
             throw new NullPointerException("Id can't be EMPTY or NULL");
         }
-        if(roles.isEmpty()){
+        if (roles.isEmpty()) {
             throw new NullPointerException("Roles can't be EMPTY");
         }
         return Jwts.builder().setSubject(username).setIssuedAt(new Date())
@@ -54,7 +54,7 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public Authentication toAuthentication(String token) {
-        if(token.equals("") || token.equals(null)){
+        if (token.equals("") || token.equals(null)) {
             throw new NullPointerException("Token can't be EMPTY or NULL");
         }
         Claims tokenBody = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();

@@ -13,9 +13,10 @@ import ru.inntotech.auth.service.AnyExecuteService;
 public class AdminExecutionController {
 
     private final AnyExecuteService anyExecuteService;
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public String executeByAdmin(){
+    public String executeByAdmin() {
         return anyExecuteService.executeForAdmin();
     }
 }

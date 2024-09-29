@@ -12,9 +12,10 @@ import ru.inntotech.auth.service.AnyExecuteService;
 @RequestMapping("/user-execution")
 public class UserExecutionController {
     private final AnyExecuteService anyExecuteService;
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public String executeByUser(){
+    public String executeByUser() {
         return anyExecuteService.executeForUser();
     }
 }

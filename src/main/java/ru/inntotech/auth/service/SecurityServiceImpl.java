@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class SecurityServiceImpl implements SecurityService{
+public class SecurityServiceImpl implements SecurityService {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -21,14 +21,14 @@ public class SecurityServiceImpl implements SecurityService{
 
     @Override
     public TokenData processPasswordToken(String username, String password) {
-        if(username.equals("") || username.equals(null)){
+        if (username.equals("") || username.equals(null)) {
             throw new NullPointerException("Username can't be EMPTY or NULL");
         }
-        if(password.equals("") || password.equals(null)){
+        if (password.equals("") || password.equals(null)) {
             throw new NullPointerException("Password can't be EMPTY or NULL");
         }
         UserEntity user = userService.findByUsername(username);
-        if(!passwordEncoder.matches(password, user.getPassword())){
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new AuthException("Exception trying to check password for user: " + username);
         }
         return createTokenData(user);
@@ -37,7 +37,7 @@ public class SecurityServiceImpl implements SecurityService{
 
     @Override
     public TokenData processRefreshToken(UUID refreshTokenValue) {
-        if(refreshTokenValue.equals("") || refreshTokenValue.equals(null)){
+        if (refreshTokenValue.equals("") || refreshTokenValue.equals(null)) {
             throw new NullPointerException("RefreshToken can't be EMPTY or NULL");
         }
         RefreshTokenEntity refreshToken = refreshTokenService.findByValue(refreshTokenValue);

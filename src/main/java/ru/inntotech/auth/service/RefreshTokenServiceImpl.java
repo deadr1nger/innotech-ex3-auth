@@ -23,7 +23,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional
     public RefreshTokenEntity saveRefreshToken(UUID userId) {
-        if(userId.equals("") || userId.equals(null)){
+        if (userId.equals("") || userId.equals(null)) {
             throw new NullPointerException("User Id can't be EMPTY or NULL");
         }
         RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();
@@ -37,7 +37,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional(readOnly = true)
     public RefreshTokenEntity findByValue(UUID value) throws NullPointerException {
-        if(value.equals("") || value.equals(null)){
+        if (value.equals("") || value.equals(null)) {
             throw new NullPointerException("Token value can't be EMPTY or NULL");
         }
         refreshTokenRepository.findByValue(value);

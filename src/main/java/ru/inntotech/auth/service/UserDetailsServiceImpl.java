@@ -13,9 +13,10 @@ import ru.inntotech.auth.repository.UserRepository;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
+
     @Override
     public UserDetails findByUsername(String username) throws UsernameNotFoundException {
-        if(username.equals("") || username.equals(null)){
+        if (username.equals("") || username.equals(null)) {
             throw new NullPointerException("Username Id can't be EMPTY or NULL");
         }
         return userRepository.findByUsername(username).map(AppUserDetails::new).orElseThrow(() -> new UsernameNotFoundException(String.format("User with username %s is not found", username)));
