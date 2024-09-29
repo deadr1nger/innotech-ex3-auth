@@ -1,6 +1,8 @@
 package ru.inntotech.auth.controller;
 
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +16,14 @@ import ru.inntotech.auth.service.SecurityService;
 @RestController
 @RequestMapping("/token")
 @RequiredArgsConstructor
+@Slf4j
 public class TokenController {
 
     private final TokenDataMapper tokenDataMapper;
     private final SecurityService securityService;
-
     @PostMapping("/password")
     public TokenResponse password(@RequestBody PasswordTokenPostRequest passwordTokenRequest) {
+        log.info(passwordTokenRequest.getUsername());
         return tokenDataMapper.tokenDataToTokenResponse(securityService.processPasswordToken(passwordTokenRequest.getUsername(), passwordTokenRequest.getPassword()));
     }
 

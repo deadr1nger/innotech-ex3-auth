@@ -19,7 +19,6 @@ public class UserController {
     private final UserMapper userMapper;
     private final UserService userService;
 
-    @PermitAll
     @PostMapping("/register")
     public UserResponse createUser(@RequestBody UserPostRequest request) {
         return userMapper.entityToUserDTO(userService.createUser(userMapper.userDtoToEntity(request)));

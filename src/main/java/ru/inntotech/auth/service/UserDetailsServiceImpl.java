@@ -2,6 +2,7 @@ package ru.inntotech.auth.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import ru.inntotech.auth.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
+@Primary
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;

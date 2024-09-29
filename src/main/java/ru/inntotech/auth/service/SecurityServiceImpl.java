@@ -1,6 +1,8 @@
 package ru.inntotech.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.inntotech.auth.model.dto.TokenData;
@@ -12,6 +14,8 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Primary
 public class SecurityServiceImpl implements SecurityService {
 
     private final UserService userService;
@@ -21,6 +25,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public TokenData processPasswordToken(String username, String password) {
+        log.info("Start auth process with password");
         if (username.equals("") || username.equals(null)) {
             throw new NullPointerException("Username can't be EMPTY or NULL");
         }
@@ -28,6 +33,7 @@ public class SecurityServiceImpl implements SecurityService {
             throw new NullPointerException("Password can't be EMPTY or NULL");
         }
         UserEntity user = userService.findByUsername(username);
+        log.info("User {} found", user.getUsername());
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new AuthException("Exception trying to check password for user: " + username);
         }
@@ -37,6 +43,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public TokenData processRefreshToken(UUID refreshTokenValue) {
+        log.info("Start auth process with refresh");
         if (refreshTokenValue.equals("") || refreshTokenValue.equals(null)) {
             throw new NullPointerException("RefreshToken can't be EMPTY or NULL");
         }

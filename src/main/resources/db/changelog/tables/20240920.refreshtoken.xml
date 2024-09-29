@@ -14,7 +14,7 @@
             <column name="value" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="refreshTokenExpiration" type="interval">
+            <column name="refresh_token_expiration" type="numeric">
                 <constraints nullable="false"/>
             </column>
         </createTable>

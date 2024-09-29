@@ -2,6 +2,7 @@ package ru.inntotech.auth.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationConverter;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityAuthConverter implements AuthenticationConverter {
 
     private static final String BEARER_PREFIX = "Bearer ";
@@ -21,6 +23,7 @@ public class SecurityAuthConverter implements AuthenticationConverter {
 
     @Override
     public Authentication convert(HttpServletRequest request) {
+        log.info("Convert auth");
         return extractBearerToken(request)
                 .map(tokenService::toAuthentication)
                 .orElse(null);
@@ -32,6 +35,7 @@ public class SecurityAuthConverter implements AuthenticationConverter {
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
             throw new AuthException("Authorization header is broken");
         }
+        log.info(authorizationHeader);
         return Optional.of(authorizationHeader.substring(BEARER_PREFIX.length()));
     }
 }

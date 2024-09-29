@@ -2,6 +2,7 @@ package ru.inntotech.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.inntotech.auth.model.entity.RefreshTokenEntity;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Primary
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;

@@ -1,13 +1,16 @@
 package ru.inntotech.auth.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.inntotech.auth.model.AppUserPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,10 +20,12 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Primary
 public class TokenServiceImpl implements TokenService {
 
     private static final String ROLE_CLAIM = "role";
@@ -57,14 +62,30 @@ public class TokenServiceImpl implements TokenService {
         if (token.equals("") || token.equals(null)) {
             throw new NullPointerException("Token can't be EMPTY or NULL");
         }
-        Claims tokenBody = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        Claims tokenBody;
+        try {
+            tokenBody = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        } catch (JwtException e) {
+            throw new IllegalArgumentException("Invalid token", e);
+        }
         String subject = tokenBody.getSubject();
+        log.info(subject);
         String id = tokenBody.get(ID_CLAIM, String.class);
+
         List<String> roles = (List<String>) tokenBody.get(ROLE_CLAIM);
+        if (roles == null || roles.isEmpty()) {
+            throw new IllegalArgumentException("Roles can't be EMPTY or NULL");
+        }
+
+        log.info(roles.get(0));
+        log.info(roles.get(1));
 
         Principal principal = new AppUserPrincipal(subject, id, roles);
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role))
+                .collect(Collectors.toList());
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, roles.stream().map(SimpleGrantedAuthority::new).toList());
+        Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);
         return auth;
     }
 }
