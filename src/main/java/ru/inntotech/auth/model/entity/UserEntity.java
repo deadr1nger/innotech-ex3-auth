@@ -1,15 +1,24 @@
 package ru.inntotech.auth.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import ru.inntotech.auth.model.enumeration.RoleType;
+
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 @Entity
 @Table(name = "`user`")
 @Setter
@@ -23,9 +32,8 @@ public class UserEntity {
     @Email
     private String email;
     private String password;
-    @ElementCollection
+    @JdbcTypeCode(SqlTypes.JSON)
     private Set<RoleType> roles = new HashSet<>();
-
 
 
 }

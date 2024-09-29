@@ -127,7 +127,7 @@
 				<artifactId>liquibase-maven-plugin</artifactId>
 				<configuration>
 					<propertyFile>src/main/resources/application.yml</propertyFile>
-					<changeLogFile>src/main/resources/migration/master.xml</changeLogFile>
+					<changeLogFile>src/main/resources/db/changelog/db.changelog-master.xml</changeLogFile>
 				</configuration>
 				<dependencies>
 					<dependency>

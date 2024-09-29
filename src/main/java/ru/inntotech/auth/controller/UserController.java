@@ -1,5 +1,6 @@
 package ru.inntotech.auth.controller;
 
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,8 @@ public class UserController {
     private final UserMapper userMapper;
     private final UserService userService;
 
-    @PostMapping
+    @PermitAll
+    @PostMapping("/register")
     public UserResponse createUser(@RequestBody UserPostRequest request) {
         return userMapper.entityToUserDTO(userService.createUser(userMapper.userDtoToEntity(request)));
     }

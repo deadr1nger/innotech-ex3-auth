@@ -8,11 +8,11 @@ spring:
     password: 1234
     jpa:
       hibernate:
-        ddl-auto: create
+        ddl-auto: none
       show-sql: true
-#    liquibase:
-#      enabled: false
-#      change-log: classpath:migration/master.xml
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
   hibernate:
     dialect: "org.hibernate.dialect.PostgreSQLDialect"
   server:
