@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import ru.inntotech.auth.model.AppUserPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import javax.crypto.SecretKey;
 import java.security.Principal;
 import java.time.Duration;
 import java.util.Date;
@@ -40,52 +42,42 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String generateToken(String username, UUID id, List<String> roles) {
-        if (username.equals("") || username.equals(null)) {
+        if (username == null || username.equals("")) {
             throw new NullPointerException("Username can't be EMPTY or NULL");
         }
-        if (id.equals("") || id.equals(null)) {
+        if (id == null || id.equals("")) {
             throw new NullPointerException("Id can't be EMPTY or NULL");
         }
         if (roles.isEmpty()) {
             throw new NullPointerException("Roles can't be EMPTY");
         }
-        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date().getTime() + tokenExpiration.toMillis())))
-                .claim(ROLE_CLAIM, roles)
-                .claim(ID_CLAIM, id.toString())
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        return Jwts.builder().setSubject(username).setIssuedAt(new Date()).setExpiration(new Date(new Date().getTime() + tokenExpiration.toMillis())).claim(ROLE_CLAIM, roles).claim(ID_CLAIM, id.toString()).signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     @Override
     public Authentication toAuthentication(String token) {
-        if (token.equals("") || token.equals(null)) {
+        if (token == null || token.equals("")) {
             throw new NullPointerException("Token can't be EMPTY or NULL");
         }
         Claims tokenBody;
         try {
-            tokenBody = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+            tokenBody = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                    .build().parseClaimsJws(token).getBody();
         } catch (JwtException e) {
             throw new IllegalArgumentException("Invalid token", e);
         }
-        String subject = tokenBody.getSubject();
-        log.info(subject);
-        String id = tokenBody.get(ID_CLAIM, String.class);
 
-        List<String> roles = (List<String>) tokenBody.get(ROLE_CLAIM);
+        String subject = tokenBody.getSubject();
+        String id = tokenBody.get(ID_CLAIM, String.class);
+        List<String> roles = tokenBody.get(ROLE_CLAIM, List.class);
         if (roles == null || roles.isEmpty()) {
             throw new IllegalArgumentException("Roles can't be EMPTY or NULL");
         }
-
-        log.info(roles.get(0));
-        log.info(roles.get(1));
-
         Principal principal = new AppUserPrincipal(subject, id, roles);
-        List<GrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);
-        return auth;
+        return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }
 }

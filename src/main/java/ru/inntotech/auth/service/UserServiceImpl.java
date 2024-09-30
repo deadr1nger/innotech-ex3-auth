@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.inntotech.auth.model.entity.UserEntity;
 import ru.inntotech.auth.repository.UserRepository;
 
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserEntity createUser(UserEntity user) {
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -34,14 +36,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserEntity findById(UUID userId) {
-        if (userId.equals("") || userId.equals(null)) {
+        if (userId  == null || userId.equals("")) {
             throw new NullPointerException("User Id can't be EMPTY or NULL");
         }
         return userRepository.findById(userId).orElseThrow(() -> new NullPointerException(String.format("User with Id %s is not found", userId)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserEntity findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format("User with username %s is not found", username)));
     }

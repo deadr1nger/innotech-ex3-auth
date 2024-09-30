@@ -1,6 +1,6 @@
 package ru.inntotech.auth.model.enumeration;
 
 public enum RoleType {
-    ADMIN,
-    USER
+    ROLE_ADMIN,
+    ROLE_USER
 }

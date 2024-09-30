@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.inntotech.auth.model.dto.TokenData;
 import ru.inntotech.auth.model.entity.RefreshTokenEntity;
 import ru.inntotech.auth.model.entity.UserEntity;
@@ -26,10 +27,10 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public TokenData processPasswordToken(String username, String password) {
         log.info("Start auth process with password");
-        if (username.equals("") || username.equals(null)) {
+        if (username  == null || username.equals("")) {
             throw new NullPointerException("Username can't be EMPTY or NULL");
         }
-        if (password.equals("") || password.equals(null)) {
+        if (password  == null || password.equals("")) {
             throw new NullPointerException("Password can't be EMPTY or NULL");
         }
         UserEntity user = userService.findByUsername(username);
@@ -44,8 +45,8 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public TokenData processRefreshToken(UUID refreshTokenValue) {
         log.info("Start auth process with refresh");
-        if (refreshTokenValue.equals("") || refreshTokenValue.equals(null)) {
-            throw new NullPointerException("RefreshToken can't be EMPTY or NULL");
+        if (refreshTokenValue  == null || refreshTokenValue.equals("")) {
+            throw new NullPointerException("RefreshToken id can't be EMPTY or NULL");
         }
         RefreshTokenEntity refreshToken = refreshTokenService.findByValue(refreshTokenValue);
         return createTokenData(userService.findById(refreshToken.getUser().getId()));

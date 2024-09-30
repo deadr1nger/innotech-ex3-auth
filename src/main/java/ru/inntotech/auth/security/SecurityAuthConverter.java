@@ -23,7 +23,6 @@ public class SecurityAuthConverter implements AuthenticationConverter {
 
     @Override
     public Authentication convert(HttpServletRequest request) {
-        log.info("Convert auth");
         return extractBearerToken(request)
                 .map(tokenService::toAuthentication)
                 .orElse(null);
@@ -35,7 +34,6 @@ public class SecurityAuthConverter implements AuthenticationConverter {
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
             throw new AuthException("Authorization header is broken");
         }
-        log.info(authorizationHeader);
         return Optional.of(authorizationHeader.substring(BEARER_PREFIX.length()));
     }
 }

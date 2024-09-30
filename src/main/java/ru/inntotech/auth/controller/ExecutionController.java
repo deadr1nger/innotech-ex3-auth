@@ -1,6 +1,7 @@
 package ru.inntotech.auth.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,12 +10,20 @@ import ru.inntotech.auth.service.AnyExecuteService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user-execution")
-public class UserExecutionController {
+@RequestMapping("/execution")
+@Slf4j
+public class ExecutionController {
+
     private final AnyExecuteService anyExecuteService;
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin")
+    public String executeByAdmin() {
+        return anyExecuteService.executeForAdmin();
+    }
+
     @PreAuthorize("hasRole('USER')")
-    @GetMapping
+    @GetMapping("/user")
     public String executeByUser() {
         return anyExecuteService.executeForUser();
     }

@@ -24,7 +24,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // Используем AntMatcher для исключения маршрута /user/register
         return new AntPathMatcher().match("/user/register", request.getRequestURI())
                 || new AntPathMatcher().match("/token/password", request.getRequestURI());
     }
