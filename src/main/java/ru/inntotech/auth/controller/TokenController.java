@@ -1,6 +1,7 @@
 package ru.inntotech.auth.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +22,13 @@ public class TokenController {
 
     private final TokenDataMapper tokenDataMapper;
     private final SecurityService securityService;
+    @Operation(summary = "Method for getting token")
     @PostMapping("/password")
     public TokenResponse password(@RequestBody PasswordTokenPostRequest passwordTokenRequest) {
         log.info(passwordTokenRequest.getUsername());
         return tokenDataMapper.tokenDataToTokenResponse(securityService.processPasswordToken(passwordTokenRequest.getUsername(), passwordTokenRequest.getPassword()));
     }
-
+    @Operation(summary = "Method for token refresh")
     @PostMapping("/refresh")
     public TokenResponse refresh(@RequestBody RefreshTokenRequest request) {
         return tokenDataMapper.tokenDataToTokenResponse(securityService.processRefreshToken(request.getRefreshToken()));

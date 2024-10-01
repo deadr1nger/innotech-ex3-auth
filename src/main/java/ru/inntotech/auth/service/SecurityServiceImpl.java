@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.inntotech.auth.model.dto.TokenData;
 import ru.inntotech.auth.model.entity.RefreshTokenEntity;
 import ru.inntotech.auth.model.entity.UserEntity;

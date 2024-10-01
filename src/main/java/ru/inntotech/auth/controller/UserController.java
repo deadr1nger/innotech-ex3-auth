@@ -1,6 +1,7 @@
 package ru.inntotech.auth.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class UserController {
 
     private final UserMapper userMapper;
     private final UserService userService;
-
+    @Operation(summary = "Method for registration")
     @PostMapping("/register")
     public UserResponse createUser(@RequestBody UserPostRequest request) {
         return userMapper.entityToUserDTO(userService.createUser(userMapper.userDtoToEntity(request)));
